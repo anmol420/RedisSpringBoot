@@ -13,6 +13,10 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgres/data
+  cache:
+    image: redis:latest
+    ports:
+      - "6379:6379"
 
 volumes:
   postgres_data:
