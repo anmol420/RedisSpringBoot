@@ -36,11 +36,11 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);
     }
 
-    @GetMapping(path = "/getBookByName/{name}")
-    public ResponseEntity<Optional<BookDTO>> getBookByName(
-            @PathVariable String name
+    @GetMapping(path = "/getBookById/{id}")
+    public ResponseEntity<Optional<BookDTO>> getBookById(
+            @PathVariable UUID id
     ) {
-        Optional<BookDTO> book = bookService.getBookByName(name).map(bookMapper::toDTO);
+        Optional<BookDTO> book = bookService.getBookById(id).map(bookMapper::toDTO);
         return ResponseEntity.status(HttpStatus.OK).body(book);
     }
 
