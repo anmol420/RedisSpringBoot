@@ -7,6 +7,9 @@ import com.anmol420.redis_springboot.repository.BookRepository;
 import com.anmol420.redis_springboot.services.BookService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,6 +33,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Transactional
+    @CachePut(value = "books", key = "#book.id")
     @Override
     public Book addBook(Book book) {
         boolean bookFound = bookRepository.existsByNameIgnoreCase(book.getName());
@@ -45,16 +49,18 @@ public class BookServiceImpl implements BookService {
         }
     }
 
+    @Cacheable(value = "books", key = "#id")
     @Override
-    public Optional<Book> getBookByName(String name) {
+    public Optional<Book> getBookById(UUID id) {
         try {
-            return bookRepository.findByName(name);
+            return bookRepository.findById(id);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Transactional
+    @CachePut(value = "books", key = "#id")
     @Override
     public Book updateBook(UUID id, Book book) {
         if (null == id) {
@@ -74,6 +80,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Transactional
+    @CacheEvict(value = "books", key = "#id")
     @Override
     public void deleteBook(UUID id) {
         if (null == id) {
